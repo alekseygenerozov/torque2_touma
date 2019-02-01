@@ -77,13 +77,13 @@ double prec_tot(double a1, double a2, double p, double e0, double q, double e_te
 	    	taux=torque_x(a, e, test.x, test.y, test.z, b);
 	    	tauy=torque_y(a, e, test.x, test.y, test.z, b);
 	    	tauz=torque_z(a, e, test.x, test.y, test.z, b);
-
+	    	//printf("%f %f\n", test.vx, test.vy)
 
 	    	MM+=deltaMM;
 
 	    	edotx=fy*jz+(test.vy*tauz-test.vz*tauy);
 	    	edoty=-fx*jz-(test.vx*tauz-test.vz*taux);
-	    	edot+=(ex*edoty-ey*edotx)/(e_test*e_test)*sig(a, a1, a2, p)*deltaA*deltaMM;
+	    	edot+=(ex*edoty-ey*edotx)/(e_test*e_test)*sig(a, a1, a2, p)*deltaA*deltaMM/2.0/Pi;
     	}
     a+=deltaA;
     e=pow((a/a1), q)*e0;
