@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include <fenv.h>
 
 #include "torque2_ring.h"
 #include "rebound.h"
@@ -25,7 +26,7 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
     int j=0;
     struct reb_particle test;
     double deltaMM=2.0*Pi/N;
-    double MM=1e-4+flag*deltaMM*0.5;
+    double MM=1.1e-4+flag*deltaMM*0.5;
     double deltaA=(a2-a1)/N0;
 
    	double* torque1;
@@ -67,6 +68,8 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
 
 
 int main(int argc, char* argv[]){
+    // feenableexcept(FE_INVALID | FE_OVERFLOW);
+
 	char* tag="a";
 	if (atoi(argv[5])){
 		tag="b";
