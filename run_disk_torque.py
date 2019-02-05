@@ -10,7 +10,7 @@ dd=1.0
 i=0
 
 m=2.5e-7
-No=1000
+No=1001
 while (dd>0.05) and (i<11):
 	bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ {0} {1} {2} {3} {4}'.format(e1, a1, ang, No, 0))
 	sys.stdout.flush()
