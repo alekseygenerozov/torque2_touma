@@ -4,20 +4,23 @@ import sys
 
 from scipy.integrate import ode
 
-loc='//home/aleksey/Dropbox/projects/disk_torque/torque_data_2/grid_disk_3/'
+loc='//home/aleksey/Dropbox/projects/disk_torque/torque_data_2/grid_disk_touma/'
 
 Ntrials=1
 ang_test=np.arange(0., 91, 5)
 ang_test_rad=ang_test*np.pi/180.0
 a_test=np.arange(0.1, 1.01,0.1)
 # a_test=[1.0]
-e_test=[0.5, 0.6, 0.7, 0.8, 0.9]
+e_test=np.arange(0., 0.91, 0.1)
+e_test_2=[0.99, 0.999999]
+e_test=np.concatenate([e_test, e_test_2])
 # e_test[-1]=0.99
 # e_test[0]=0.01
 m=2.5e-7
 mdisk=1000.0*m
 t_sec=2.0*np.pi*(1.0/mdisk)
 t_norm=t_sec/(2.0*np.pi)
+idot0=1.38e-12
 
 
 def j(e,a):
@@ -33,14 +36,23 @@ idot=np.zeros([len(e_test), len(a_test), len(ang_test), Ntrials])
 idot_avg=np.zeros([len(e_test), len(a_test), len(ang_test)])
 jdot_avg=np.zeros([len(e_test), len(a_test), len(ang_test)])
 
-for ii,e1 in enumerate(e_test):
+for ii,e1 in enumerate(e_test[1:]):
 	for jj,a1 in enumerate(a_test):
 		for kk,ang in enumerate(ang_test[1:]):
-				jdot[ii, jj, kk+1]=np.genfromtxt(loc+'tau_N1000_a_{0:g}_{1}_{2}_{3}'.format(e1, a1, ang))/m
-				idot[ii, jj, kk+1]=np.genfromtxt(loc+'i_N1000_a_{0:g}_{1}_{2}_{3}'.format(e1, a1, ang))/m
+				jdot[ii+1, jj, kk+1]=np.genfromtxt(loc+'tau_a_{0:g}_{1:g}_{2}'.format(e1, a1, ang))/m
+				if np.isnan(jdot[ii, jj, kk+1]):
+					jdot[ii+1, jj, kk+1]=np.genfromtxt(loc+'tau_b_{0:g}_{1:g}_{2}'.format(e1, a1, ang))/m
+
+				idot[ii+1, jj, kk+1]=np.genfromtxt(loc+'i_a_{0:g}_{1:g}_{2}'.format(e1, a1, ang))/m
+				if np.isnan(idot[ii, jj, kk+1]):
+					idot[ii+1, jj, kk+1]=np.genfromtxt(loc+'i_b_{0:g}_{1:g}_{2}'.format(e1, a1, ang))/m
+
 
 idot_avg=idot
 jdot_avg=jdot
+
+# print np.any(np.isnan(jdot_avg))
+# print np.any(np.isnan(idot_avg))
 
 def jdot_interp(e, a, omega):
 	# ee, aa, oo=np.meshgrid(e_test, a_test, ang_test_rad)
@@ -52,7 +64,7 @@ def jdot_interp(e, a, omega):
 
 
 def idot_interp(e, a, omega):
-	return interpn((e_test, a_test, ang_test_rad), idot_avg, [e, a, abs(omega)])
+	return interpn((e_test, a_test, ang_test_rad), idot_avg, [e, a, abs(omega)])-idot0/m
 
 
 def rhs(t,y):
@@ -67,7 +79,7 @@ def rhs(t,y):
 e_part=0.7
 a_part=1.0
 j_part=j(e_part, a_part)
-omega_part=0.1
+omega_part=sys.argv[1]
 ##Time step
 t_tot=100.0*t_norm
 delta_t=2.0*np.pi
