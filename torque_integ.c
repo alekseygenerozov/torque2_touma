@@ -1,11 +1,14 @@
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include <system.h>
 // #include <fenv.h>
 
 #include "torque2_ring.h"
 #include "rebound.h"
+
 
 
 
@@ -46,7 +49,7 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
     for (j=0; j<N0; j++){
 	    for (i=0; i<N; i++){
 	    	f=reb_tools_M_to_f(e_test, MM);
-	    	test=reb_tools_orbit2d_to_particle(1.0, star, 2.5e-7, a_test, e_test, omega_test, f);
+	    	test=reb_tools_orbit_to_particle(1.0, star, 2.5e-7, a_test, e_test, 0.1, omega_test, 0.0, f);
 	    	force1=force(a, e, test.x, test.y, test.z, b);
 	    	torque1=torque(a, e, test.x, test.y, test.z, b);
 
@@ -71,13 +74,14 @@ int main(int argc, char* argv[]){
     // feenableexcept(FE_INVALID | FE_OVERFLOW);
 
 	char* tag="a";
-	if (atoi(argv[5])){
+	if (atoi(argv[6])){
 		tag="b";
 	}
 
 	double m = 2.5e-7;
 	double norm=1000.0*pow(m,2.0);
-	double* sol=prec_tot(1.0, 2.0, 1.01, 0.7, 0.0, atof(argv[1]), atof(argv[2]), atof(argv[3])*Pi/180.0, 1.0e-4, atoi(argv[4]), atoi(argv[5]) );
+	double* sol=prec_tot(1.0, 2.0, 1.01, 0.7, 0.0, atof(argv[1]), atof(argv[2]), atof(argv[3])*Pi/180.0, atof(argv[4]), atoi(argv[5]), atoi(argv[6]) );
+    printf("%d \n", atoi(argv[6]));
 
 	char fname[80]="";
     strcat(fname, "tau");

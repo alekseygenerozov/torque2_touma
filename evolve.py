@@ -20,7 +20,9 @@ m=2.5e-7
 mdisk=1000.0*m
 t_sec=2.0*np.pi*(1.0/mdisk)
 t_norm=t_sec/(2.0*np.pi)
-idot0=1.38e-12
+idot0=float(sys.argv[3])
+
+print "#{0}".format((idot0)/m*t_norm)
 
 
 def j(e,a):
@@ -76,12 +78,12 @@ def rhs(t,y):
 	return [jdot_interp(e, a, omega), 0, idot_interp(e, a, omega)]
 
 ##Initial conditions for test particle 
-e_part=0.7
-a_part=1.0
+e_part=float(sys.argv[1])
+a_part=0.5
 j_part=j(e_part, a_part)
-omega_part=sys.argv[1]
+omega_part=float(sys.argv[2])
 ##Time step
-t_tot=100.0*t_norm
+t_tot=1000.0*t_norm
 delta_t=2.0*np.pi
 # delta_t=t_norm/100.0
 t=0.0
@@ -90,6 +92,8 @@ r=ode(rhs)
 y0=[j_part, a_part, omega_part]
 r.set_initial_value(y0, t)
 
+f=open('sol_pert_e{0}_om{1}_idot{2}'.format(e_part, omega_part, idot0), 'w')
 while r.successful() and r.t<t_tot:
-	print r.t/(2.0*np.pi), eccentricity(r.y[0], r.y[1]), r.y[2]*180.0/np.pi
+	f.write('{0} {1} {2}\n'.format(r.t/(2.0*np.pi), eccentricity(r.y[0], r.y[1]), r.y[2]*180.0/np.pi))
 	r.integrate(r.t+delta_t)
+f.close()
