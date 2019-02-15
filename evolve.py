@@ -79,7 +79,7 @@ def rhs(t,y):
 
 ##Initial conditions for test particle 
 e_part=float(sys.argv[1])
-a_part=0.5
+a_part=1.0
 j_part=j(e_part, a_part)
 omega_part=float(sys.argv[2])
 ##Time step
