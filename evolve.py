@@ -66,7 +66,7 @@ def jdot_interp(e, a, omega):
 
 
 def idot_interp(e, a, omega):
-	return interpn((e_test, a_test, ang_test_rad), idot_avg, [e, a, abs(omega)])-idot0/m
+	return interpn((e_test, a_test, ang_test_rad), idot_avg, [e, a, abs(omega)], method='linear')-idot0/m
 
 
 def rhs(t,y):
@@ -79,7 +79,7 @@ def rhs(t,y):
 
 ##Initial conditions for test particle 
 e_part=float(sys.argv[1])
-a_part=1.0
+a_part=0.5
 j_part=j(e_part, a_part)
 omega_part=float(sys.argv[2])
 ##Time step
