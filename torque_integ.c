@@ -13,6 +13,14 @@
 #include "rebound.h"
 
 
+// static struct argp_option options[] = { 
+//     { "etest", 'e', 0, 0, "Compare lines instead of characters."},
+//     { "word", 'w', 0, 0, "Compare words instead of characters."},
+//     { "nocase", 'i', 0, 0, "Compare case insensitive instead of case sensitive."},
+//     { 0 } 
+// };
+
+
 
 
 double sig(double a, double a1, double a2, double p){
@@ -124,8 +132,8 @@ int main(int argc, char* argv[]){
     // put ':' in the starting of the 
     // string so that program can  
     //distinguish between '?' and ':'
-    extern char *optarg; 
-    extern int optind;
+    // extern char *optarg; 
+    // extern int optind;
     int opt; 
     char* tag="a";
     char* e_test="0.7";
@@ -135,9 +143,10 @@ int main(int argc, char* argv[]){
     char* flag="0";
     char* points="1001";
     char* q_disk="0.0";
-    while((opt = getopt(argc, argv, ":if:lrx")) != -1)  
+
+    while((opt = getopt(argc, argv, "e:a:o:n:f:q:b:")) != -1)  
     {  
-        printf("%d \n", opt);
+        // printf("%d \n", opt);
         switch(opt)  
         {  
             case 'e':  
@@ -165,14 +174,17 @@ int main(int argc, char* argv[]){
                 break;
         }  
     }  
-
+    printf("%s\n", e_test);
 	double m = 2.5e-7;
 	double norm=1000.0*pow(m,2.0);
     double norm2=pow(1000.0*m,2.0);
 	double* sol=prec_tot(1.0, 2.0, 1.01, 0.7, atof(q_disk), atof(e_test), atof(a_test), atof(ang_test)*Pi/180.0, atof(b), atoi(points), atoi(flag));
 
 	char tag2[80]="";
+
     strcat(tag2, tag);
+    printf("%s\n", tag2);
+
     // int i=1;
     strcat(tag2, "_");
     strcat(tag2, e_test);
