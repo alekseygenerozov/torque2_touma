@@ -7,7 +7,7 @@
 // #include <system.h>
 // #include <fenv.h>
 #include <unistd.h>
-
+#include <getopt.h>
 
 #include "torque2_ring.h"
 #include "rebound.h"
@@ -137,6 +137,7 @@ int main(int argc, char* argv[]){
     int opt; 
     char* tag="a";
     char* e_test="0.7";
+    char* e_in="0.7";
     char* a_test="0.99"; 
     char* ang_test="0.0";
     char* b="1e-4";
@@ -144,7 +145,18 @@ int main(int argc, char* argv[]){
     char* points="1001";
     char* q_disk="0.0";
 
-    while((opt = getopt(argc, argv, "e:a:o:n:f:q:b:")) != -1)  
+
+    static struct option long_options[] =
+        {
+          /* These options set a flag. */
+          {"ein", required_argument, NULL, 'i'}, 
+          {"atest", required_argument, NULL, 'a'},
+          {"etest", required_argument, NULL, 'e'},
+          {"flag",    required_argument, NULL, 'f'},
+          {0, 0, 0, 0}
+        };
+
+    while((opt = getopt_long(argc, argv, "e:a:o:n:f:q:b:", long_options, NULL)) != -1)  
     {  
         // printf("%d \n", opt);
         switch(opt)  
@@ -154,6 +166,9 @@ int main(int argc, char* argv[]){
                 break;
             case 'a': 
                 a_test=(optarg);
+                break;
+            case 'i':
+                e_in=(optarg);
                 break;
             case 'o':
                 ang_test=(optarg);
@@ -178,7 +193,7 @@ int main(int argc, char* argv[]){
 	double m = 2.5e-7;
 	double norm=1000.0*pow(m,2.0);
     double norm2=pow(1000.0*m,2.0);
-	double* sol=prec_tot(1.0, 2.0, 1.01, 0.7, atof(q_disk), atof(e_test), atof(a_test), atof(ang_test)*Pi/180.0, atof(b), atoi(points), atoi(flag));
+	double* sol=prec_tot(1.0, 2.0, 1.01, atof(e_in), atof(q_disk), atof(e_test), atof(a_test), atof(ang_test)*Pi/180.0, atof(b), atoi(points), atoi(flag));
 
 	char tag2[80]="";
 
