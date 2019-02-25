@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include <confuse.h>
 // #include <system.h>
 // #include <fenv.h>
+#include <unistd.h>
+
 
 #include "torque2_ring.h"
 #include "rebound.h"
@@ -118,23 +121,67 @@ void out(char* pre, char* tag, double out){
 int main(int argc, char* argv[]){
     // feenableexcept(FE_INVALID | FE_OVERFLOW);
 
-	char* tag="a";
-	if (atoi(argv[5])){
-		tag="b";
-	}
+    // put ':' in the starting of the 
+    // string so that program can  
+    //distinguish between '?' and ':'
+    extern char *optarg; 
+    extern int optind;
+    int opt; 
+    char* tag="a";
+    char* e_test="0.7";
+    char* a_test="0.99"; 
+    char* ang_test="0.0";
+    char* b="1e-4";
+    char* flag="0";
+    char* points="1001";
+    char* q_disk="0.0";
+    while((opt = getopt(argc, argv, ":if:lrx")) != -1)  
+    {  
+        printf("%d \n", opt);
+        switch(opt)  
+        {  
+            case 'e':  
+                e_test=(optarg);
+                break;
+            case 'a': 
+                a_test=(optarg);
+                break;
+            case 'o':
+                ang_test=(optarg);
+                break;
+            case 'n':
+                points=(optarg);
+                break;
+            case 'f':
+                flag=(optarg);
+                if (flag)
+                    tag="b";
+                break;
+            case 'q':
+                q_disk=(optarg);
+                break;
+            case 'b':
+                b=(optarg);
+                break;
+        }  
+    }  
 
 	double m = 2.5e-7;
 	double norm=1000.0*pow(m,2.0);
     double norm2=pow(1000.0*m,2.0);
-	double* sol=prec_tot(1.0, 2.0, 1.01, 0.7, 0.0, atof(argv[1]), atof(argv[2]), atof(argv[3])*Pi/180.0, 1.0e-4, atoi(argv[4]), atoi(argv[5]) );
+	double* sol=prec_tot(1.0, 2.0, 1.01, 0.7, atof(q_disk), atof(e_test), atof(a_test), atof(ang_test)*Pi/180.0, atof(b), atoi(points), atoi(flag));
 
 	char tag2[80]="";
     strcat(tag2, tag);
-    int i=1;
-    for (i=1; i<4; i++){
-        strcat(tag2, "_");
-        strcat(tag2, argv[i]);
-    }
+    // int i=1;
+    strcat(tag2, "_");
+    strcat(tag2, e_test);
+    strcat(tag2, "_");
+    strcat(tag2, a_test);
+    strcat(tag2, "_");
+    strcat(tag2, ang_test);
+
+    
     printf("%s\n",tag2);
     out("tau", tag2, norm*sol[0]);
     out("i", tag2, norm*sol[1]);
