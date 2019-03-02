@@ -48,6 +48,10 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
    	double* force1;
    	double torqueTot[3];
     double forceTot[3];
+    double torqueOrb[N][3];
+    double forceOrb[N][3];
+    double ieDotOrb[N];
+    double ieDotOrb2[N];
     for (k=0; k<3; k++){
         forceTot[k]=0;
         torqueTot[k]=0;
@@ -72,18 +76,26 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
     double eddotx=0;
     double eddoty=0;
     double ieddot=0;
-    //FILE* forceFile;
-    //forceFile=fopen("forces", "w");
+    FILE* forceFile;
+    forceFile=fopen("forces", "w");
 
     for (j=0; j<N0; j++){
 	    for (i=0; i<N; i++){
+            if (j==0){
+                ieDotOrb[i]=0;
+                ieDotOrb2[i]=0;
+                for (k=0; k<3; k++){
+                    torqueOrb[i][k]=0;
+                    forceOrb[i][k]=0;
+                }
+            }
 	    	f=reb_tools_M_to_f(e_test, MM);
 	    	test=reb_tools_orbit2d_to_particle(1.0, star, mm, a_test, e_test, omega_test, f);
+            MM+=deltaMM;
 	    	//test=reb_tools_orbit_to_particle(1.0, star, mm, a_test, e_test, 0.0, omega_test, 0.0, f);
 	    	force1=force(a, e, test.x, test.y, test.z, b);
 	    	torque1=torque(a, e, test.x, test.y, test.z, b);
 
-	    	MM+=deltaMM;
 	    	edotx=force1[1]*jz+(test.vy*torque1[2]-test.vz*torque1[1]);
 	    	edoty=-force1[0]*jz-(test.vx*torque1[2]-test.vz*torque1[0]);
 	    	iedot+=(ex*edoty-ey*edotx)/(e_test*e_test)*sig(a, a1, a2, p)*deltaA*deltaMM/2.0/Pi;
@@ -99,6 +111,10 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
             for (k=0; k<3; k++){
                 torqueTot[k]+=sig(a, a1, a2, p)*torque1[k]*deltaA*deltaMM/2.0/Pi;
                 forceTot[k]+=sig(a, a1, a2, p)*force1[k]*deltaA*deltaMM/2.0/Pi;
+                torqueOrb[i][k]+=sig(a, a1, a2, p)*torque1[k]*deltaA*deltaMM/2.0/Pi;
+                forceOrb[i][k]+=sig(a, a1, a2, p)*force1[k]*deltaA*deltaMM/2.0/Pi;
+                ieDotOrb[i]+=(ex*edoty-ey*edotx)/(e_test*e_test)*sig(a, a1, a2, p)*deltaA*deltaMM/2.0/Pi;
+                ieDotOrb2[i]+=(ex*edoty2-ey*edotx2)/(e_test*e_test)*sig(a, a1, a2, p)*deltaA*deltaMM/2.0/Pi;
             }
 	    	
     	}
@@ -107,6 +123,16 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
     e=pow((a/a1), q)*e0;
 
 	}
+    MM=1.1e-4+flag*deltaMM*0.5;
+    for (i=0; i<N; i++){
+        f=reb_tools_M_to_f(e_test, MM);
+        test=reb_tools_orbit2d_to_particle(1.0, star, mm, a_test, e_test, omega_test, f);
+        MM+=deltaMM;
+        fprintf(forceFile, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n", test.x, test.y, test.z, test.vx, test.vy, test.vz, torqueOrb[i][2], 
+            forceOrb[i][0], forceOrb[i][1], ieDotOrb[i], ieDotOrb2[i]);
+    }
+    fclose(forceFile);
+
 	sol[0]=torqueTot[2];
 	sol[1]=iedot;
     sol[2]=edot2;
@@ -152,6 +178,7 @@ int main(int argc, char* argv[]){
           {"ein", required_argument, NULL, 'i'}, 
           {"atest", required_argument, NULL, 'a'},
           {"etest", required_argument, NULL, 'e'},
+          {"pomega", required_argument, NULL, 'o'},
           {"flag",    required_argument, NULL, 'f'},
           {0, 0, 0, 0}
         };
@@ -178,7 +205,7 @@ int main(int argc, char* argv[]){
                 break;
             case 'f':
                 flag=(optarg);
-                if (flag)
+                if (atoi(flag)!=0)
                     tag="b";
                 break;
             case 'q':
@@ -207,6 +234,10 @@ int main(int argc, char* argv[]){
     strcat(tag2, a_test);
     strcat(tag2, "_");
     strcat(tag2, ang_test);
+    strcat(tag2, "_");
+    strcat(tag2, q_disk);
+    strcat(tag2, "_");
+    strcat(tag2, e_in);
 
     
     printf("%s\n",tag2);
