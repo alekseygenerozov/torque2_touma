@@ -34,10 +34,10 @@ while (dd>0.05) and (i<11):
 	# sys.stdout.flush()
 	# bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
 	# 	.format(args.etest, args.atest, args.pomega, No, 1, args.b, args.q, args.ein))
-	bc.bash_command('~/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
+	bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
 		.format(args.etest, args.atest, args.pomega, No, 0, args.b, args.q, args.ein))
 	sys.stdout.flush()
-	bc.bash_command('~/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
+	bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
 		.format(args.etest, args.atest, args.pomega, No, 1, args.b, args.q, args.ein))
 	sys.stdout.flush()
 

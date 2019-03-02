@@ -16,9 +16,12 @@ for e1 in e1s:
 	for a1 in a1s:
 		for ang in angs:
 			temp=open('template.sh').read()
+			temp=temp.replace('xx1', '{0}'.format(e1))
 			temp=temp.replace('xx', '--etest {0}'.format(e1))
-			temp=temp.replace('yy', '--atest {0:.1f}'.format(a1))
-			temp=temp.replace('zz', '--omega {0:.1f} -q -1.7'.format(ang))
+			temp=temp.replace('yy1', '{0}'.format(a1))
+			temp=temp.replace('yy', '--atest {0:.1g}'.format(a1))
+			temp=temp.replace('zz1', '{0}'.format(ang))
+			temp=temp.replace('zz', '--omega {0:.1f} -q -1.6 --ein 0.9'.format(ang))
 			f=open('e{0}_a{1:.1g}_ang{2:.1f}.sh'.format(e1, a1, ang), 'w')
 			f.write(temp)
 			f.close()
