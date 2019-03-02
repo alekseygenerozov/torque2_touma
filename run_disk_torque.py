@@ -29,20 +29,24 @@ i=0
 m=2.5e-7
 No=1001
 while (dd>0.05) and (i<11):
-	bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
+	# bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
+	# 	.format(args.etest, args.atest, args.pomega, No, 0, args.b, args.q, args.ein))
+	# sys.stdout.flush()
+	# bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
+	# 	.format(args.etest, args.atest, args.pomega, No, 1, args.b, args.q, args.ein))
+	bc.bash_command('~/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
 		.format(args.etest, args.atest, args.pomega, No, 0, args.b, args.q, args.ein))
 	sys.stdout.flush()
-	bc.bash_command('/projects/alge9397/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
+	bc.bash_command('~/code/c/torque2_touma/torque_integ --etest {0} --atest {1} -o {2} -n {3} -f {4} -b {5} -q {6} --ein {7}'\
 		.format(args.etest, args.atest, args.pomega, No, 1, args.b, args.q, args.ein))
-	#bc.bash_command('/home/aleksey/code/c/torque2_touma/torque_integ {0} {1} {2} {3} {4}'.format(e1, a1, ang, No, 1))
 	sys.stdout.flush()
 
 
-	tdot1=np.genfromtxt('tau_a_e{0}_a{1}_om{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
-	tdot2=np.genfromtxt('tau_a_e{0}_a{1}_om{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
+	tdot1=np.genfromtxt('tau_a_e{0}_a{1}_o{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
+	tdot2=np.genfromtxt('tau_a_e{0}_a{1}_o{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
 	dd=abs((tdot1-tdot2)/tdot1)
-	idot1=np.genfromtxt('i_a_e{0}_a{1}_om{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
-	idot2=np.genfromtxt('i_b_e{0}_a{1}_om{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
+	idot1=np.genfromtxt('i_a_e{0}_a{1}_o{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
+	idot2=np.genfromtxt('i_b_e{0}_a{1}_o{2}_q{3}_ein{4}'.format(args.etest, args.atest, args.pomega, args.q, args.ein))
 	dd=abs((idot1-idot2)/idot1)
 
 	No=No*2

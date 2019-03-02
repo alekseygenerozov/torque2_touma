@@ -3,23 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <confuse.h>
-// #include <system.h>
-// #include <fenv.h>
 #include <unistd.h>
 #include <getopt.h>
 
 #include "torque2_ring.h"
 #include "rebound.h"
-
-
-// static struct argp_option options[] = { 
-//     { "etest", 'e', 0, 0, "Compare lines instead of characters."},
-//     { "word", 'w', 0, 0, "Compare words instead of characters."},
-//     { "nocase", 'i', 0, 0, "Compare case insensitive instead of case sensitive."},
-//     { 0 } 
-// };
-
 
 
 
@@ -228,15 +216,15 @@ int main(int argc, char* argv[]){
     printf("%s\n", tag2);
 
     // int i=1;
-    strcat(tag2, "_");
+    strcat(tag2, "_e");
     strcat(tag2, e_test);
-    strcat(tag2, "_");
+    strcat(tag2, "_a");
     strcat(tag2, a_test);
-    strcat(tag2, "_");
+    strcat(tag2, "_o");
     strcat(tag2, ang_test);
-    strcat(tag2, "_");
+    strcat(tag2, "_q");
     strcat(tag2, q_disk);
-    strcat(tag2, "_");
+    strcat(tag2, "_ein");
     strcat(tag2, e_in);
 
     
