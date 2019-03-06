@@ -17,7 +17,37 @@ double sig(double a, double a1, double a2, double p){
 	// return a2;
 }
 
-double* prec_tot(double a1, double a2, double p, double e0, double q, double e_test, double a_test, double omega_test, double b, int N, int flag){
+double* force_tot_point(double a1, double a2, double p, double e0, double q, double r1x, double r1y, double r1z, double b){
+    // Central body
+    //Number of sma bins
+    int N0=100;
+    int j=0;
+    int k=0;
+    double deltaA=(a2-a1)/N0;
+
+    double* force1;
+    static double forceTot[3];
+    for (k=0; k<3; k++){
+        forceTot[k]=0;
+    }
+
+    double a=a1;
+    double e=e0;
+    for (j=0; j<N0; j++){
+            force1=force(a, e, r1x, r1y, r1z, b);
+            for (k=0; k<3; k++){
+                forceTot[k]+=sig(a, a1, a2, p)*force1[k]*deltaA;            
+            }
+    a+=deltaA;
+    e=pow((a/a1), q)*e0;
+
+    }
+
+    return forceTot;
+}
+
+double* prec_tot(double a1, double a2, double p, double e0, double q, double e_test, double a_test, double omega_test, double b, int N, int flag, 
+char* tag){
 	// Central body
     struct reb_particle star = {0};
     star.m = 1;
@@ -65,8 +95,10 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
     double eddoty=0;
     double ieddot=0;
     FILE* forceFile;
-    forceFile=fopen("forces", "w");
 
+    char tag2[80]="forces_";
+    strcat(tag2, tag);
+    forceFile=fopen(tag2, "w");
     for (j=0; j<N0; j++){
 	    for (i=0; i<N; i++){
             if (j==0){
@@ -111,6 +143,7 @@ double* prec_tot(double a1, double a2, double p, double e0, double q, double e_t
     e=pow((a/a1), q)*e0;
 
 	}
+    fprintf(forceFile, "x y z vx vy vz tau fx fy ie1 ie2\n");
     MM=1.1e-4+flag*deltaMM*0.5;
     for (i=0; i<N; i++){
         f=reb_tools_M_to_f(e_test, MM);
@@ -208,10 +241,7 @@ int main(int argc, char* argv[]){
 	double m = 2.5e-7;
 	double norm=1000.0*pow(m,2.0);
     double norm2=pow(1000.0*m,2.0);
-	double* sol=prec_tot(1.0, 2.0, 1.01, atof(e_in), atof(q_disk), atof(e_test), atof(a_test), atof(ang_test)*Pi/180.0, atof(b), atoi(points), atoi(flag));
-
-	char tag2[80]="";
-
+    char tag2[80]="";
     strcat(tag2, tag);
     printf("%s\n", tag2);
 
@@ -226,6 +256,11 @@ int main(int argc, char* argv[]){
     strcat(tag2, q_disk);
     strcat(tag2, "_ein");
     strcat(tag2, e_in);
+
+	double* sol=prec_tot(1.0, 2.0, 1.01, atof(e_in), atof(q_disk), atof(e_test), atof(a_test),
+        atof(ang_test)*Pi/180.0, atof(b), atoi(points), atoi(flag), tag2);
+
+
 
     
     printf("%s\n",tag2);
