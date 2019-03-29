@@ -7,7 +7,17 @@
 
 
 double Ab(double a, double e, double r1x, double r1y, double r1z, double b){
-	return r1x*r1x+r1y*r1y+r1z*r1z+a*a+b*b+2.0*a*e*r1x;
+	//Now with compact softening!!!
+	double nu1=atan2(r1y, r1x);
+	double x[3];
+	x[0] = a*(1.0-e*e)*cos(nu1)/(1.0+e*cos(nu1));
+	x[1] = a*(1.0-e*e)*sin(nu1)/(1.0+e*cos(nu1));
+	x[2] = 0;
+
+ 	double dist = pow((r1x-x[0])*(r1x-x[0])+(r1y-x[1])*(r1y-x[1])+r1z*r1z, 0.5);
+ 	double b1=(dist<b)?b:0;
+
+	return r1x*r1x+r1y*r1y+r1z*r1z+a*a+b1*b1+2.0*a*e*r1x;
 
 }
 double Bce(double a, double e, double r1x, double r1y, double r1z, double b){
