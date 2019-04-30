@@ -75,9 +75,9 @@ vel0=np.copy(vel)
 en0=energy(pos0, vel0)
 
 
-f=open('log_N{0}_m{1}_b{2}_a{3}_e{4}_i{5}_p{6}'.format(N, m_disk, params0['b'], atest, etest, itest, ptest), 'w')
-f2=open('pos_N{0}_m{1}_b{2}_a{3}_e{4}_i{5}_p{6}'.format(N, m_disk, params0['b'], atest, etest, itest, ptest), 'w')
-f3=open('tde_N{0}_m{1}_b{2}_a{3}_e{4}_i{5}_p{6}'.format(N, m_disk, params0['b'], atest, etest, itest, ptest), 'w')
+f=open('log_N{0}_m{1}_b{2}_a{3}_e{4:.2g}_i{5}_p{6}'.format(N, m_disk, params0['b'], atest, etest, itest, ptest), 'w')
+f2=open('pos_N{0}_m{1}_b{2}_a{3}_e{4:.2g}_i{5}_p{6}'.format(N, m_disk, params0['b'], atest, etest, itest, ptest), 'w')
+f3=open('tde_N{0}_m{1}_b{2}_a{3}_e{4:.2g}_i{5}_p{6}'.format(N, m_disk, params0['b'], atest, etest, itest, ptest), 'w')
 norb=100
 for i in range(norb*N):
 	pos,vel=leapfrog(params0, pos, vel, per/N, m_disk)
